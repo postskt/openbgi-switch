@@ -1,4 +1,98 @@
-# OpenBGI
+# OpenBGI (Nintendo Switch Port)
+
+[![Build Nintendo Switch Homebrew](https://github.com/postskt/openbgi-switch/actions/workflows/switch_build.yml/badge.svg)](https://github.com/postskt/openbgi-switch/actions/workflows/switch_build.yml)
+
+本项目为 **OpenBGI**（BGI / Ethornell Galgame 视觉小说引擎 C99 开源重实现）的 **Nintendo Switch 平台原生移植版**。
+
+---
+
+## 📌 开源协议与使用条款（License & Terms of Use）
+
+1. **开源与自由修改**：本项目继承上游开源协议（GPL-2.0-only），完全开源。允许任何个人、爱好者或非商业研究者自由克隆、学习、阅读、调试、修改与二次开发。
+2. **严格禁止商用（Non-Commercial Only）**：
+   - **严禁**将本项目源码、编译生成的二进制产物（包括但不限于 `.nro`、`.elf`、`.nsp`）用于任何商业盈利行为。
+   - **严禁**进行任何形式的有偿打包、商业售卖、付费移植定制服务、赞助墙挂载或任何形式的变相收费分发。
+3. **衍生项目必须开源（Share-Alike / Copyleft）**：
+   - 任何基于本项目代码修改、优化、移植或衍生的新版本，**必须同样以开源方式完整公布所有修改源码**。
+   - 严禁闭源发布，严禁转换为商业专有软件。
+
+---
+
+## 🔗 参考项目与致谢（Upstream Reference）
+
+- **上游原版仓库**：[Cytlan/openbgi](https://github.com/Cytlan/openbgi.git)
+- **OpenBGI 官方网站**：[OpenBGI.net](https://openbgi.net)
+- **致谢**：感谢 Cytlan 及 OpenBGI 开源社区对 BGI/Ethornell 引擎的精密逆向与重实现，使得 Lump of Sugar、August 等社的大量经典视觉小说作品得以在现代系统上跨平台延续。
+
+---
+
+## 🎮 Nintendo Switch 移植版特性
+
+- **1280×720 原生渲染管线**：
+  - 基于 SDL2 硬件加速渲染，强制锁定 720p 逻辑分辨率（`SDL_RenderSetLogicalSize`）；
+  - 4:3 比例传统游戏自动保持等比居中并生成两侧黑边，宽屏作品点对点满屏，防撕裂并保持 60 FPS 垂直同步。
+- **全套手柄与触控控制**：
+  - **A 键**：对话推进 / 确认 / 鼠标左键；
+  - **B 键**：取消 / 隐藏对话框 / 呼出右键菜单；
+  - **X 键**：自动播放模式（Auto Mode）；
+  - **Y 键**：文本履历回溯（Backlog）；
+  - **R / ZR 键**：快进跳过（Skip / Fast Forward）；
+  - **Plus (+) 键**：系统菜单 / 设置；
+  - **左摇杆**：平滑模拟鼠标光标移动；
+  - **电容触摸屏**：支持点按、双击与触控拖拽，还原原生平板触控体验。
+- **低延迟流式音频**：
+  - 基于 SDL2 Audio 实现 16-bit 44.1kHz 双声道实时拉取，精准还原 BGI 软件混音器表现。
+- **FreeType2 与 Switch 共享字库**：
+  - 支持读取内置字体文件（`romfs:/font.ttf` 或 `sdmc:/switch/openbgi/font.ttf`）；
+  - 缺省时自动调用 libnx 接口读取 Switch 固件自带的 CJK 系统共享字库（`PlSharedFontType_Standard`），免除乱码困扰。
+- **沙盒文件系统与安全重定向**：
+  - 游戏原版 `.arc` 只读资产一律通过虚拟光驱 `romfs:/` 安全读取，支持逐层大小写不敏感匹配；
+  - 存档数据（`Save/`）与注册表模拟（`registry.txt`）严格重定向到可写介质 `sdmc:/switch/openbgi/saves/`，保障 Switch 虚拟光驱只读安全。
+
+---
+
+## 🛠️ 项目构建方向与流程
+
+本项目提供 **三种构建方向**，满足不同场景下的使用需求：
+
+### 方向一：GitHub Actions 云端容器自动化构建（推荐，零环境门槛）
+无需在本地搭建臃肿的交叉编译环境，仓库已内置 GitHub Actions 工作流（`.github/workflows/switch_build.yml`）：
+1. 将本项目 Fork 或推送到你的 GitHub 仓库；
+2. 进入仓库顶部的 **Actions** 页面，找到 **`Build Nintendo Switch Homebrew (OpenBGI)`**；
+3. 点击 **Run workflow** 即可在官方 `devkitpro/devkita64:latest` 容器内完成依赖拉取与全自动构建；
+4. 构建完成后，直接在页面底部的 **Artifacts** 下载打包好的 `openbgi-switch-homebrew.zip`（内含 `bgi.nro` 与 `bgi.elf`）。
+
+### 方向二：本地 devkitA64 交叉编译
+在已安装 devkitPro 的环境（Linux 或 Windows MSYS2）下：
+```bash
+# 1. 安装 Switch 核心开发依赖库
+dkp-pacman -Syu --noconfirm switch-dev switch-sdl2 switch-freetype switch-libvorbis switch-zlib make
+
+# 2. 导出环境并编译
+export DEVKITPRO=/opt/devkitpro   # Windows 下通常为 /c/devkitPro
+make -f Makefile.switch -j$(nproc)
+```
+构建成功后将在 `bin/switch/` 下生成 `bgi.nro`。
+
+### 方向三：独立单 NSP 封装（杜绝外挂 SD 卡）
+根据 Galgame 独立打包规范，将游戏数据完整封入单个安装包：
+1. 将游戏的全部资产（`system.arc`, `sysprg.arc`, `data*.arc` 等）放入 `romfs/` 目录；
+2. 运行内置的 NSP 封装工具：
+   ```bash
+   python tools/switch/package_nsp.py \
+       --nro bin/switch/bgi.nro \
+       --romfs romfs \
+       --keys keys.dat \
+       --titleid 0100B61000010000 \
+       --title "游戏名称" \
+       --author "开发商" \
+       --icon icon.png
+   ```
+工具将结合 `hacbrewpack` 生成在 Switch 官方主界面直接安装运行的独立 NSP 安装包。
+
+---
+
+# OpenBGI 原版说明 (Original OpenBGI)
 
 OpenBGI is an open-source reimplementation, in C99, of Ethornell's
 "Buriko General Interpreter" (BGI), the visual-novel engine.  It is
