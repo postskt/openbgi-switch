@@ -47,8 +47,11 @@ SPECS    := -specs=$(DEVKITPRO)/libnx/switch.specs
 LDFLAGS  := $(ARCH) $(SPECS) -g -pie $(LIBPATHS)
 
 # Switch SDL2/OpenGL/音频等完整静态依赖链
+# freetype 由 devkitPro 预编译时启用了 harfbuzz/libpng/bzip2 集成，需一并补链；
+# mesa(libglapi) 是 C++ 代码，需要 libstdc++；顺序: 被依赖者在前
 LIBS := -lSDL2 -lEGL -lGLESv2 -lglapi -ldrm_nouveau \
-        -lfreetype -lvorbisfile -lvorbis -logg -lz -lnx -lm -lpthread
+        -lfreetype -lharfbuzz -lpng -lbz2 -lvorbisfile -lvorbis -logg -lz \
+        -lstdc++ -lnx -lm -lpthread
 
 # 源码清单
 CORE_SRC := $(wildcard src/core/*.c)
