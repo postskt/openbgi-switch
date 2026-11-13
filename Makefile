@@ -149,7 +149,7 @@ LIB_OBJ := $(filter-out obj/$(PLATFORM)/sys/main.o,$(OBJ)) # the engine without 
 
 TARGET ?= bin/bgi$(EXE)
 
-.PHONY: all win wasm wasm-sim tools check check-win check-wasm wasm-test test clean msg
+.PHONY: all win wasm wasm-sim switch tools check check-win check-wasm wasm-test test clean msg
 
 all: $(TARGET)
 
@@ -178,6 +178,9 @@ wasm:
 
 wasm-sim:
 	$(MAKE) PLATFORM=wasmsim
+
+switch:
+	$(MAKE) -f Makefile.switch
 
 $(TARGET): $(OBJ) | bin
 	@mkdir -p $(dir $@)

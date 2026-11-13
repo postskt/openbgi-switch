@@ -1,0 +1,45 @@
+name: Build Nintendo Switch Homebrew (OpenBGI)
+
+on:
+  push:
+    branches: [ main, master, switch* ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-switch:
+    name: Build OpenBGI Switch (.nro / .elf)
+    runs-on: ubuntu-latest
+    container: devkitpro/devkita64:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Switch portlibs dependencies
+        run: |
+          dkp-pacman -Syu --noconfirm switch-sdl2 switch-freetype switch-libvorbis switch-zlib
+
+      - name: Build Switch Homebrew
+        run: |
+          # 确保环境变量设置完备
+          export DEVKITPRO=/opt/devkitpro
+          export PATH=$DEVKITPRO/devkitA64/bin:$DEVKITPRO/tools/bin:$PATH
+          make -f Makefile.switch -j$(nproc)
+
+      - name: Inspect built artifacts
+        run: |
+          echo "=== 产物目录检查 ==="
+          ls -lh bin/switch/bgi.nro build_switch/bgi.elf build_switch/bgi.nacp
+          file bin/switch/bgi.nro build_switch/bgi.elf
+
+      - name: Upload Switch Homebrew Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: openbgi-switch-homebrew
+          path: |
+            bin/switch/bgi.nro
+            build_switch/bgi.elf
+            build_switch/bgi.nacp
+          retention-days: 30
