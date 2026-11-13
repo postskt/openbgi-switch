@@ -12,7 +12,7 @@ static void AudioCallback(void* userdata, Uint8* stream, int len)
 	int frames = len / (2 * (int)sizeof(int16_t));
 	if(gSwitch.audioFill)
 	{
-		gSwitch.audioFill((int16_t*)stream, frames, gSwitch.audioUser);
+		gSwitch.audioFill(gSwitch.audioUser, (int16_t*)stream, frames);
 	}
 	else
 	{

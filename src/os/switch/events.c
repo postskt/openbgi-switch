@@ -161,13 +161,14 @@ static void OnMouseDown(int btn, int cx, int cy)
 	gSwitch.lastClickX = cx;
 	gSwitch.lastClickY = cy;
 
-	if(isDbl && gSwitch.handlers.mouse_dblclick)
+	/* WM_?BUTTONDBLCLK 语义：双击通知先于按下本身触发 */
+	if(isDbl && gSwitch.handlers.double_click)
 	{
-		gSwitch.handlers.mouse_dblclick(btn, cx, cy);
+		gSwitch.handlers.double_click(btn);
 	}
-	else if(gSwitch.handlers.mouse_down)
+	if(gSwitch.handlers.mouse_button)
 	{
-		gSwitch.handlers.mouse_down(btn, cx, cy);
+		gSwitch.handlers.mouse_button(btn, 1, cx, cy);
 	}
 }
 
@@ -179,8 +180,8 @@ static void OnMouseUp(int btn, int cx, int cy)
 	int vk = (btn == 0) ? 0x01 : (btn == 1 ? 0x02 : 0x04);
 	SetKey(vk, 0);
 
-	if(gSwitch.handlers.mouse_up)
-		gSwitch.handlers.mouse_up(btn, cx, cy);
+	if(gSwitch.handlers.mouse_button)
+		gSwitch.handlers.mouse_button(btn, 0, cx, cy);
 }
 
 /* Switch 手柄按键映射为 Galgame 核心操作 */
@@ -369,7 +370,7 @@ int OS_PumpMessages(void)
 			case SDL_MOUSEWHEEL:
 			{
 				if(gSwitch.handlers.mouse_wheel)
-					gSwitch.handlers.mouse_wheel(ev.wheel.y * 120, gSwitch.mouseX, gSwitch.mouseY);
+					gSwitch.handlers.mouse_wheel(ev.wheel.y * 120);
 				break;
 			}
 

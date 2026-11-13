@@ -253,7 +253,6 @@ static int FindFill(OsFind_t* h, OsFindData_t* out)
 		struct stat st;
 		snprintf(full, sizeof(full), "%s/%s", h->dirPath, e->d_name);
 		out->attrs = OS_ATTR_NORMAL;
-		out->size = 0;
 		if(stat(full, &st) == 0)
 		{
 			out->attrs = 0;
@@ -263,8 +262,6 @@ static int FindFill(OsFind_t* h, OsFindData_t* out)
 				out->attrs |= OS_ATTR_READONLY;
 			if(!out->attrs)
 				out->attrs = OS_ATTR_NORMAL;
-			out->size = (uint32_t)st.st_size;
-			UnixToFileTime(st.st_mtime, &out->timeLo, &out->timeHi);
 		}
 
 		/* 将匹配的文件名转为 Shift-JIS 填入 out->name */
