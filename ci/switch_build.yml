@@ -19,7 +19,7 @@ jobs:
 
       - name: Install Switch portlibs dependencies
         run: |
-          dkp-pacman -Syu --noconfirm switch-sdl2 switch-freetype switch-libvorbis switch-zlib
+          dkp-pacman -Syu --noconfirm switch-dev switch-sdl2 switch-freetype switch-libvorbis switch-zlib
 
       - name: Build Switch Homebrew
         run: |

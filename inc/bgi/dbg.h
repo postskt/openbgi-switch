@@ -28,8 +28,8 @@
 
 struct Thread;
 
-#if defined(BGI_WASM)
-/* The WebAssembly build has no debugger: the hooks are empty functions the
+#if defined(BGI_WASM) || defined(BGI_SWITCH)
+/* The WebAssembly and Switch builds have no debugger: the hooks are empty functions the
  * compiler removes, and the scheduler's flag and limit are constants. */
 #define gDbgHooked    0
 #define gDbgInsnLimit 0x100000u
