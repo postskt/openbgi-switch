@@ -16,7 +16,7 @@ int OS_MessageBox(const char* text, const char* caption, uint32_t flags)
 	OsSwitch_SjisToUtf8(text ? text : "", uMsg, sizeof(uMsg));
 
 	Uint32 sdlFlags = SDL_MESSAGEBOX_INFORMATION;
-	if(flags & OS_MB_ICONERROR)
+	if(flags & OS_MB_ICONHAND)
 		sdlFlags = SDL_MESSAGEBOX_ERROR;
 	else if(flags & OS_MB_ICONWARNING)
 		sdlFlags = SDL_MESSAGEBOX_WARNING;
@@ -41,7 +41,7 @@ int OS_FileDialog(int save, char* path, size_t n, const char* filter, const char
 }
 
 int OS_FileDialogN(int save, char* path, size_t n, const char* const* descs, const char* const* pats, int count,
-                   int* index, const char* defExt, const char* initialDir, const char* title)
+                   const char* defExt, const char* initialDir, const char* title)
 {
 	BGI_UNUSED(save);
 	BGI_UNUSED(path);
@@ -49,7 +49,6 @@ int OS_FileDialogN(int save, char* path, size_t n, const char* const* descs, con
 	BGI_UNUSED(descs);
 	BGI_UNUSED(pats);
 	BGI_UNUSED(count);
-	BGI_UNUSED(index);
 	BGI_UNUSED(defExt);
 	BGI_UNUSED(initialDir);
 	BGI_UNUSED(title);
@@ -77,8 +76,9 @@ int OS_DialogInput1(const char* title, const char* initial, int maxLen, int digi
 }
 
 int OS_DialogInput2(const char* title, const char* label1, const char* initial1, int maxLen1, int digits1, char* out1,
-                    const char* label2, const char* initial2, int maxLen2, int digits2, char* out2)
+                    const char* label2, const char* initial2, int maxLen2, int digits2, char* out2, int compact)
 {
+	BGI_UNUSED(compact);
 	BGI_UNUSED(title);
 	BGI_UNUSED(label1);
 	BGI_UNUSED(initial1);

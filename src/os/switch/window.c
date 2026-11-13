@@ -11,7 +11,7 @@ struct OsDc
 	int unused;
 };
 
-static OsDc_t gMainDc;
+static struct OsDc gMainDc; /* OsDc_t 是 void 别名，仅以指针形式传递 */
 static bool gNeedPresent = false;
 static uint32_t* gBackbuffer = NULL;
 static int gBackbufferW = 0;
@@ -148,10 +148,10 @@ int OS_WindowCreate(const OsWindowDesc_t* d)
 	/* 锁定 720p 原生逻辑分辨率，自动居中等比黑边缩放 */
 	SDL_RenderSetLogicalSize(gSwitch.renderer, SWITCH_SCREEN_WIDTH, SWITCH_SCREEN_HEIGHT);
 
-	if(d && d->clientW > 0 && d->clientH > 0)
+	if(d && d->width > 0 && d->height > 0)
 	{
-		gSwitch.clientW = d->clientW;
-		gSwitch.clientH = d->clientH;
+		gSwitch.clientW = d->width;
+		gSwitch.clientH = d->height;
 	}
 	else
 	{
