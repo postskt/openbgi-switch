@@ -17,7 +17,16 @@ jobs:
 
       - name: Install Switch portlibs dependencies
         run: |
-          dkp-pacman -Syu --noconfirm switch-sdl2 switch-freetype switch-libvorbis switch-zlib
+          for i in 1 2 3; do
+            if dkp-pacman -Syu --noconfirm switch-sdl2 switch-freetype switch-libvorbis switch-zlib; then
+              exit 0
+            fi
+            echo "devkitPro mirror rate-limited (attempt $i/3), retrying in 90s..."
+            sleep 90
+          done
+          echo "WARNING: devkitPro mirror unreachable - falling back to preinstalled container packages"
+          dkp-pacman -Qq switch-sdl2 switch-freetype switch-libvorbis switch-zlib && exit 0
+          exit 1
 
       - name: Build Switch Homebrew
         run: |
