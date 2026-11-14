@@ -16,6 +16,7 @@ STRIP   := $(DEVKITPRO)/devkitA64/bin/$(PREFIX)strip
 
 NACPTOOL := $(DEVKITPRO)/tools/bin/nacptool
 ELF2NRO  := $(DEVKITPRO)/tools/bin/elf2nro
+ELF2NSO  := $(DEVKITPRO)/tools/bin/elf2nso
 
 # 目标输出定义
 APP_TITLE   := OpenBGI
@@ -27,6 +28,8 @@ OUTPUT_DIR  := bin/switch
 TARGET_ELF  := $(BUILD_DIR)/bgi.elf
 TARGET_NACP := $(BUILD_DIR)/bgi.nacp
 TARGET_NRO  := $(OUTPUT_DIR)/bgi.nro
+# NSO 放在构建目录：既作为中间产物，也便于 CI 产物归档（NSP 的 ExeFS main 用）
+TARGET_NSO  := $(BUILD_DIR)/bgi.nso
 
 # 编译参数
 ARCH    := -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
@@ -80,9 +83,17 @@ ICON_ARG  := $(if $(wildcard icon.png),--icon=icon.png,)
 
 .PHONY: all clean nro
 
-all: $(TARGET_NRO)
+all: $(TARGET_NRO) $(TARGET_NSO)
 
 nro: $(TARGET_NRO)
+
+nso: $(TARGET_NSO)
+
+# NSO 用于独立 NSP 安装包的 ExeFS main（模拟器/真机应用加载器均要求 NSO）
+$(TARGET_NSO): $(TARGET_ELF) | $(OUTPUT_DIR)
+	@echo "  ELF2NSO $@"
+	$(ELF2NSO) $< $@
+	@echo "=== Switch Homebrew Built: $@ ==="
 
 $(TARGET_NRO): $(TARGET_ELF) $(TARGET_NACP) | $(OUTPUT_DIR)
 	@echo "  ELF2NRO $@"
