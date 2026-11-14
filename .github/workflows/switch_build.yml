@@ -33,4 +33,5 @@ jobs:
             bin/switch/bgi.nro
             build_switch/bgi.elf
             build_switch/bgi.nacp
+            build_switch/bgi.nso
           retention-days: 30
