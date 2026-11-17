@@ -1,4 +1,4 @@
-# OpenBGI (Nintendo Switch Port)
+# OpenBGI · BGI（Ethornell）引擎 Nintendo Switch 移植（Nintendo Switch Port）
 
 [![Build Nintendo Switch Homebrew](https://github.com/postskt/openbgi-switch/actions/workflows/switch_build.yml/badge.svg)](https://github.com/postskt/openbgi-switch/actions/workflows/switch_build.yml)
 
