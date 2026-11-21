@@ -1,6 +1,18 @@
 # OpenBGI · BGI（Ethornell）引擎 Nintendo Switch 移植（Nintendo Switch Port）
 
 [![Build Nintendo Switch Homebrew](https://github.com/postskt/openbgi-switch/actions/workflows/switch_build.yml/badge.svg)](https://github.com/postskt/openbgi-switch/actions/workflows/switch_build.yml)
+[![Download latest](https://img.shields.io/badge/⬇️_下载最新版_v0.1.0-e60012?logo=nintendo3ds&logoColor=white)](https://github.com/postskt/openbgi-switch/releases/latest)
+[![License](https://img.shields.io/badge/License-GPL--2.0-blue)](LICENSE)
+
+## ⬇️ 一键下载 | One-click Download
+
+| 文件 | 用途 |
+|---|---|
+| [`bgi.nro`](https://github.com/postskt/openbgi-switch/releases/latest/download/bgi.nro) | 放入 SD 卡（如 `sdmc:/switch/openbgi/`），homebrew 菜单直接运行 |
+| [`bgi.nso`](https://github.com/postskt/openbgi-switch/releases/latest/download/bgi.nso) | NSP 打包用 ExeFS `main`（配合 `bgi.nacp`） |
+
+> 产物由 devkitA64 CI 从 main 分支自动构建。**本项目不分发任何游戏资源**，请使用合法拥有的 BGI 引擎游戏数据。
+
 
 本项目为 **OpenBGI**（BGI / Ethornell Galgame 视觉小说引擎 C99 开源重实现）的 **Nintendo Switch 平台原生移植版**。
 
